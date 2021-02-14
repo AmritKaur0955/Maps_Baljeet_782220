@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<Marker> markers = new ArrayList();
     LocationManager locationManager;
     LocationListener locationListener;
+    Location user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                user = location;
                 setHomeMarker(location);
             }
 
@@ -96,11 +98,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
     private void setMarker(LatLng latLng) {
+        float[] distance = new float[1];
+        Location.distanceBetween(latLng.latitude,latLng.longitude,user.getLatitude(),user.getLongitude(),distance);
         if (markers.size() == POLYGON_SIDES)
             clearMap();
 
         MarkerOptions options = new MarkerOptions().position(latLng)
                 .title(str[markers.size()])
+                .snippet("Distance from me is "+distance[0])
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
                 .draggable(true);
 
